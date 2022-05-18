@@ -8,7 +8,30 @@ window._ = require('lodash');
 
 window.axios = require('axios');
 
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+//window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+window.axios.defaults.headers.common = {
+    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+    'X-Requested-With': 'XMLHttpRequest',
+    'Content-Type': 'application/json;charset=UTF-8'
+}
+
+window.Vue = require('vue')
+window.Base64 = require('js-base64').Base64
+
+import ElementUI from 'element-ui'
+
+import 'element-ui/lib/theme-chalk/display.css'
+Vue.use(ElementUI)
+
+//import VueSocketIOExt from 'vue-socket.io-extended'
+//import { io } from 'socket.io-client'
+//const socket = io('http://videostream.fidodarts.com:8007')
+//const socket = io('http://52.196.115.119:8007')
+//Vue.use(VueSocketIOExt, socket)
+
+const isDebug_mode = process.env.NODE_ENV !== 'production';
+Vue.config.debug = isDebug_mode;
+Vue.config.devtools = isDebug_mode;
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
