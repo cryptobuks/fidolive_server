@@ -10,5 +10,5 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+Route::get('/info', 'SiteController@info');
 Route::get('/{any}', 'SiteController@index')->where('any', '.*');

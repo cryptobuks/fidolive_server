@@ -29,4 +29,9 @@ class SiteController extends Controller
 
     	return view('index', compact('texts', 'ev'));
     }
+
+    public function info(Request $request)
+    {
+        echo phpinfo();
+    }
 }
