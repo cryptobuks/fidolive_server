@@ -14,7 +14,9 @@ const mix = require('laravel-mix');
 mix.js('resources/js/app.js', 'public/js')
 	.extract(['vue'])
 
-mix.sass('resources/sass/app.scss', 'public/css')
+mix.sass('resources/sass/main.scss', 'public/css')
+	.sass('resources/sass/style.scss', 'public/css')
+	.sass('resources/sass/view.scss', 'public/css')
 
 if (!mix.inProduction()) {
 	mix.sourceMaps()

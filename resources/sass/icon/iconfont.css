@@ -1,0 +1,59 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 2431341 */
+  src: url('iconfont.woff2?t=1624083501279') format('woff2'),
+       url('iconfont.woff?t=1624083501279') format('woff'),
+       url('iconfont.ttf?t=1624083501279') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.el-icon-thirdlist:before {
+  content: "\ea35";
+}
+
+.el-icon-thirdtournament:before {
+  content: "\f0b1";
+}
+
+.el-icon-thirdleague:before {
+  content: "\e606";
+}
+
+.el-icon-thirdlive:before {
+  content: "\e627";
+}
+
+.el-icon-thirdaudiohigh:before {
+  content: "\e613";
+}
+
+.el-icon-thirdaudio-mute:before {
+  content: "\e609";
+}
+
+.el-icon-thirdlogout:before {
+  content: "\ea1b";
+}
+
+.el-icon-thirdbars:before {
+  content: "\e8cd";
+}
+
+.el-icon-thirdplay:before {
+  content: "\e689";
+}
+
+.el-icon-thirdpause:before {
+  content: "\e7e1";
+}
+
+.el-icon-thirdstop:before {
+  content: "\e90f";
+}
+

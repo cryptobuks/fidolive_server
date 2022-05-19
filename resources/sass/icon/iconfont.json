@@ -1,0 +1,86 @@
+{
+  "id": "2431341",
+  "name": "fidodarts",
+  "font_family": "iconfont",
+  "css_prefix_text": "el-icon-third",
+  "description": "fidodarts",
+  "glyphs": [
+    {
+      "icon_id": "6146905",
+      "name": "list",
+      "font_class": "list",
+      "unicode": "ea35",
+      "unicode_decimal": 59957
+    },
+    {
+      "icon_id": "16415703",
+      "name": "tournament",
+      "font_class": "tournament",
+      "unicode": "f0b1",
+      "unicode_decimal": 61617
+    },
+    {
+      "icon_id": "2271508",
+      "name": "league",
+      "font_class": "league",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "3888571",
+      "name": "live",
+      "font_class": "live",
+      "unicode": "e627",
+      "unicode_decimal": 58919
+    },
+    {
+      "icon_id": "850465",
+      "name": "audio-high",
+      "font_class": "audiohigh",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    },
+    {
+      "icon_id": "6145422",
+      "name": "audio-mute",
+      "font_class": "audio-mute",
+      "unicode": "e609",
+      "unicode_decimal": 58889
+    },
+    {
+      "icon_id": "19989288",
+      "name": "logout",
+      "font_class": "logout",
+      "unicode": "ea1b",
+      "unicode_decimal": 59931
+    },
+    {
+      "icon_id": "7735869",
+      "name": "bars",
+      "font_class": "bars",
+      "unicode": "e8cd",
+      "unicode_decimal": 59597
+    },
+    {
+      "icon_id": "5083542",
+      "name": "play",
+      "font_class": "play",
+      "unicode": "e689",
+      "unicode_decimal": 59017
+    },
+    {
+      "icon_id": "5127443",
+      "name": "pause",
+      "font_class": "pause",
+      "unicode": "e7e1",
+      "unicode_decimal": 59361
+    },
+    {
+      "icon_id": "6986998",
+      "name": "stop",
+      "font_class": "stop",
+      "unicode": "e90f",
+      "unicode_decimal": 59663
+    }
+  ]
+}

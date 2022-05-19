@@ -1,0 +1,71 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100&display=swap');
+
+@import './icon/iconfont.css';
+
+@import '~element-ui/lib/theme-chalk/index.css';
+
+html,
+button,
+a,
+p,
+div {
+    font-family: 'Oswald', 'Noto Sans TC', sans-serif !important;
+    letter-spacing: .15rem;
+}
+
+.iconfont,
+[class^="el-icon-third"],
+[class^=" el-icon-third"] {
+    font-family: "iconfont" !important;
+    font-size: 16px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.handle,
+.no-user-select {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+/* disable text selected */
+.noselect {
+    -webkit-touch-callout: none;
+    /* iOS Safari */
+    -webkit-user-select: none;
+    /* Safari */
+    -khtml-user-select: none;
+    /* Konqueror HTML */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
+    user-select: none;
+    /* Non-prefixed version, currently */
+    /* supported by Chrome and Opera */
+}
+
+.no-scroll-bar::-webkit-scrollbar {
+    display: none
+}
+
+.text-center {
+    text-align: center;
+}
+
+
