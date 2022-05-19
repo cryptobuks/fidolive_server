@@ -63,6 +63,25 @@ return [
             ]) : [],
         ],
 
+        'mysql_video' => [
+            'driver'    => env('DB_CONNECTION_VIDEO'),
+            'host'      => env('DB_HOST_VIDEO'),
+            'port'      => env('DB_PORT_VIDEO'),
+            'database'  => env('DB_DATABASE_VIDEO'),
+            'username'  => env('DB_USERNAME_VIDEO'),
+            'password'  => env('DB_PASSWORD_VIDEO'),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),
