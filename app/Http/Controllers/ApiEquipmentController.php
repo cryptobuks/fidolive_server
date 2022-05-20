@@ -12,24 +12,24 @@ class ApiEquipmentController extends Controller
     	$data = [];
         $data['errorCode'] = 'er0000';
         if($request->distributor_id === null || $request->distributor_id === '') {
-        	$sql = 'SELECT pi.id AS id, pi.no, pi.mac, pi.name, pi.password, pi.store_id, pi.distributor_id, pi.machine_id, cpi.status AS status, cpi.ip, cpi.version, CONCAT( m.id, " ", m.name ) AS machine_name FROM iteam_pi AS pi LEFT JOIN iteam_connect_pi AS cpi ON cpi.pi_id=pi.id Left JOIN machine AS m ON m.id=pi.machine_id WHERE pi.is_delete=0 ORDER BY cpi.status DESC, pi.id ASC';
-        	$data['data'] = DB::connection('mysql')->select($sql);
+        	$sql = 'SELECT pi.id AS id, pi.no, pi.mac, pi.name, pi.store_id, pi.distributor_id, pi.machine_id, cpi.status AS status, cpi.ip, cpi.version FROM iteam_pi AS pi LEFT JOIN iteam_connect_pi AS cpi ON cpi.pi_id=pi.id  WHERE pi.is_delete=0 ORDER BY cpi.status DESC, pi.id ASC';
+        	$data['data'] = DB::connection('mysql_video')->select($sql);
 
-        	if($data['data']) {
+        	/*if($data['data']) {
         		$sql = 'SELECT id, fidoStoreId, name FROM store';
         		$store = DB::connection('mysql')->select($sql);
-        	}
+        	}*/
         } else {
-        	$sql = 'SELECT pi.id AS id, pi.no, pi.mac, pi.name, pi.password, pi.store_id, pi.distributor_id, pi.machine_id, cpi.status AS status, cpi.ip, cpi.version, CONCAT( m.id, " ", m.name ) AS machine_name FROM iteam_pi AS pi LEFT JOIN iteam_connect_pi AS cpi ON cpi.pi_id=pi.id Left JOIN machine AS m ON m.id=pi.machine_id WHERE pi.distributor_id=:distributor_id AND pi.is_delete=0 ORDER BY cpi.status DESC, pi.id ASC';
-        	$data['data'] = DB::connection('mysql')->select($sql, ['distributor_id' => $request->distributor_id]);
+        	$sql = 'SELECT pi.id AS id, pi.no, pi.mac, pi.name, pi.store_id, pi.distributor_id, pi.machine_id, cpi.status AS status, cpi.ip, cpi.version FROM iteam_pi AS pi LEFT JOIN iteam_connect_pi AS cpi ON cpi.pi_id=pi.id WHERE pi.distributor_id=:distributor_id AND pi.is_delete=0 ORDER BY cpi.status DESC, pi.id ASC';
+        	$data['data'] = DB::connection('mysql_video')->select($sql, ['distributor_id' => $request->distributor_id]);
 
-        	if($data['data']) {
+        	/*if($data['data']) {
         		$sql = 'SELECT id, fidoStoreId, name FROM store WHERE distributorId=:distributor_id';
         		$store = DB::connection('mysql')->select($sql, ['distributor_id' => $request->distributor_id]);
-        	}
+        	}*/
         }
 
-        if($data['data']) {
+        /*if($data['data']) {
         	$sql = 'SELECT id, name FROM distributor';
         	$distributor = DB::connection('mysql')->select($sql);
 
@@ -45,7 +45,7 @@ class ApiEquipmentController extends Controller
         			$value->s_name = '';
         		}
         	}
-        }
+        }*/
         
         return compact('data');
     }

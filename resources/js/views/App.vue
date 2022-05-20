@@ -32,7 +32,8 @@ export default {
         this.setLangCont(this.text)
         this.setEV(this.ev)
         console.log(this.$store.state.gobalData.ev)
-        var path = this.$route.path
+        var route = this.$route
+        var path = route.path
         var paths = path.split('/')
         if (paths[1] === 'view') {
             this.changePageStatus(true)
@@ -57,7 +58,7 @@ export default {
     }),
     mounted() {},
     methods: {
-        ...mapActions(['setLangCont', 'changeLoginStatus', 'changeDrawerStatus', 'setMe', 'changePageStatus', 'setEV'])
+        ...mapActions(['setLangCont', 'changeLoginStatus', 'changeDrawerStatus', 'setMe', 'changePageStatus', 'setEV', 'changeTitle'])
     },
     watch: {}
 }

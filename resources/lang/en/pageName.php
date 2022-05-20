@@ -1,9 +1,8 @@
 <?php
 
 return [
-	'title' => [
-		'admin' => 'FIDO LIVE::Admin'
+	/*'title' => [
+		'default' => 'FIDO LIVE'
 	],
-    'login' => 'Login'
-
+    'Login' => 'Login'*/
 ];

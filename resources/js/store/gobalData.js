@@ -62,9 +62,6 @@ export default {
         setMe: ({ commit }, val) => {
             commit('setMe', val)
         },
-        changeTitle: ({ commit }, val) => {
-            document.title = `${val}::`;
-        },
         changeLoginStatus: ({ commit }, val) => {
             commit('changeLoginStatus', val)
         },

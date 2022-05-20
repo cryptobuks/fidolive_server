@@ -62,8 +62,8 @@ export default {
         ...mapGetters(['isTouchDevice'])
     },
     created() {
-        let pageName = this.$store.state.langData.cont.pageName
-        this.changeTitle(`${pageName.title.admin}::${pageName.login}`)
+        var route = this.$route
+        this.changeTitle({ title: 'default', name: route.name })
     },
     methods: {
         ...mapActions(['changeTitle', 'changeLoginStatus', 'setMe']),

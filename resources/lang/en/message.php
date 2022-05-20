@@ -25,7 +25,7 @@ return [
     	'ph0002' => 'please choose'
     ],
     'data' => [
-    	'd0001' => 'no data',
+    	'd0001' => '沒有資料',
     	'd0002' => 'No matching data',
         'd0003' => 'Loading'
     ],
