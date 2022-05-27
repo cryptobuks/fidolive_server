@@ -13,27 +13,28 @@ return [
     	'er0001' => 'Please enter your account',
     	'er0002' => 'Please enter your password',
     	'er0003' => 'Incorrect account and password',
-    	'er0050' => 'Please enter name',
-        'er0051' => 'Please enter mac',
-        'er0052' => 'Please enter password',
-        'er0053' => 'Please select distributor',
-        'er0100' => 'Operate the set upper limit',
-        'er0101' => 'Input format error'
+    	'er0050' => '請輸入名稱',
+        'er0051' => '請輸入MAC地址',
+        'er0052' => '請輸入密碼',
+        'er0053' => '請選擇代理商',
+        'er0100' => '操作設定的上限',
+        'er0101' => '輸入格式錯誤'
     ],
     'placeholder' => [
     	'ph0001' => 'Please enter content',
-    	'ph0002' => 'please choose'
+    	'ph0002' => '請選擇'
     ],
     'data' => [
     	'd0001' => '沒有資料',
-    	'd0002' => 'No matching data',
-        'd0003' => 'Loading'
+    	'd0002' => '沒有匹配的資料',
+        'd0003' => 'Loading',
+        'd0004' => '無相關機台或機台均已綁定'
     ],
     'database' => [
-        'ok0001' => 'Successfully added',
-        'ok0002' => 'Successfully updated',
-        'ok0003' => 'Successfully deleted',
-        'er0001' => 'Database storage error',
-        'er0002' => 'Database update error',
+        'ok0001' => '資料新增成功',
+        'ok0002' => '資料更新成功',
+        'ok0003' => '資料刪除成功',
+        'er0001' => '資料庫存儲錯誤',
+        'er0002' => '資料庫更新錯誤',
     ]
 ];

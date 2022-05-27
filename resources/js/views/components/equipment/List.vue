@@ -25,8 +25,24 @@
             </el-table-column>
             <el-table-column prop="mac" :label="$store.state.langData.cont.pageFn.table.MAC" v-if="$store.state.gobalData.me.roleCode === 1">
             </el-table-column>
+            <el-table-column :label="$store.state.langData.cont.pageFn.table.IP">
+                <template slot-scope="scope">
+                    <el-link v-if="scope.row.status" type="success" @click.native.prevent="handlePort(scope.$index, scope.row)">{{ scope.row.ip }}</el-link>
+                    <p>version : {{ scope.row.version }}</p>
+                </template>
+            </el-table-column>
             <el-table-column :label="$store.state.langData.cont.pageFn.table.Operating" width="100">
                 <template slot-scope="scope">
+                    <p style="margin: 0;">
+                        <el-button @click.native.prevent="handleEdit(scope.$index, scope.row)" type="text">
+                            {{ $store.state.langData.cont.pageFn.table.Edit }}
+                        </el-button>
+                    </p>
+                    <p style="margin: 0;">
+                        <el-button @click.native.prevent="handleDelete(scope.$index, scope.row)" type="text">
+                            {{ $store.state.langData.cont.pageFn.table.Delete }}
+                        </el-button>
+                    </p>
                 </template>
             </el-table-column>
         </el-table>
@@ -61,7 +77,6 @@ export default {
                     params: { distributor_id: this.$store.state.gobalData.me.roleID }
                 })
                 .then(response => {
-                    console.log(response)
                     let data = response.data.data
                     if (data.errorCode === 'er0000') {
                         this.tableData = data.data
@@ -78,6 +93,42 @@ export default {
         handleRefresh() {
             this.changeAppLoadingStatus(true)
             this.fetchData()
+        },
+        handlePort() {
+
+        },
+        handleEdit(index, row) {
+            this.$router.push({ name: 'EditEquipment', query: { id: row.id } })
+        },
+        handleDelete(index, row) {
+            this.changeAppLoadingStatus(true)
+            axios
+                .delete('/api/deleteEquipment', { params: { id: row.id } })
+                .then(response => {
+                    let data = response.data.data
+                    if (data.errorCode === 'er0000') {
+                        this.$message({
+                            message: this.$store.state.langData.cont.msg.database.ok0003,
+                            type: 'success',
+                            offset: 90
+                        })
+                        this.fetchData()
+                    } else {
+                        this.$message({
+                            message: this.$store.state.langData.cont.msg.database[data.errorCode],
+                            type: 'error',
+                            offset: 90
+                        })
+                        this.changeAppLoadingStatus(false)
+                    }
+                }).catch(error => {
+                    this.changeAppLoadingStatus(false)
+                    this.$message({
+                        message: JSON.stringify(error),
+                        type: 'error',
+                        offset: 90
+                    })
+                })
         },
     }
 }

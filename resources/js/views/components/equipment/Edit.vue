@@ -3,14 +3,30 @@
         <Breadcrumb :iteams="br" />
         <br>
         <el-form :model="form" :rules="rules" ref="ruleForm" label-position="top">
-            <el-form-item v-if="$store.state.gobalData.me.roleCode === 1" :label="$store.state.langData.cont.pageFn.table.Distributor" prop="distributor">
-                <el-autocomplete ref="distributor" v-model="form.distributor" clearable :fetch-suggestions="querySearchAsync" :placeholder="$store.state.langData.cont.msg.placeholder.ph0002" @select="handleSelect" @blur="handleBlur" @clear="handleClear" style="width: 100%"></el-autocomplete>
+            <el-form-item v-if="$store.state.gobalData.me.roleCode === 1" :label="$store.state.langData.cont.pageFn.table.Distributor" prop="distributorId">
+                <el-select v-model="form.distributorId" :placeholder="$store.state.langData.cont.msg.placeholder.ph0002" clearable filterable @change="getStore(true)" @clear="clear" :no-data-text="$store.state.langData.cont.msg.data.d0001" style="width: 100%">
+                    <el-option v-for="item in distributors" :key="item.id" :label="item.value" :value="item.id">
+                    </el-option>
+                </el-select>
             </el-form-item>
-            <el-form-item v-if="$store.state.gobalData.me.roleCode === 1" :label="$store.state.langData.cont.pageFn.table.Store" prop="store">
-                <el-autocomplete ref="store" v-model="form.store" clearable :fetch-suggestions="querySearchStoreAsync" :placeholder="$store.state.langData.cont.msg.placeholder.ph0002" @select="handleStoreSelect" @blur="handleStoreBlur" @clear="handleStoreClear" style="width: 100%"></el-autocomplete>
+            <el-form-item v-if="$store.state.gobalData.me.roleCode === 1" :label="$store.state.langData.cont.pageFn.table.Store" prop="storeId">
+                <el-select v-model="form.storeId" :placeholder="$store.state.langData.cont.msg.placeholder.ph0002" clearable filterable :disabled="stores.length===0" @change="getMachine(true)" @clear="clear" :no-data-text="$store.state.langData.cont.msg.data.d0001" :no-match-text="$store.state.langData.cont.msg.data.d0002" style="width: 100%">
+                    <el-option v-for="item in stores" :key="item.id" :label="item.value" :value="item.id">
+                    </el-option>
+                </el-select>
             </el-form-item>
-            <el-form-item v-if="$store.state.gobalData.me.roleCode === 1" :label="$store.state.langData.cont.pageFn.table.Machine" prop="machineValue">
-                <el-autocomplete ref="machine" v-model="form.machineValue" clearable :fetch-suggestions="querySearchMachineAsync" :placeholder="$store.state.langData.cont.msg.placeholder.ph0002" @select="handleMachineSelect" @blur="handleMachineBlur" @clear="handleMachineClear" style="width: 100%"></el-autocomplete>
+            <el-form-item v-if="$store.state.gobalData.me.roleCode === 1" :label="$store.state.langData.cont.pageFn.table.Machine" prop="machineId">
+                <el-select v-model="form.machineId" :placeholder="$store.state.langData.cont.msg.placeholder.ph0002" clearable filterable :disabled="machines.length===0" @clear="clear" :no-data-text="$store.state.langData.cont.msg.data.d0001" :no-match-text="$store.state.langData.cont.msg.data.d0002" style="width: 100%">
+                    <el-option v-for="item in machines" :key="item.id" :label="item.value" :value="item.id" :disabled="originalForm.machineId!==item.id && useMachines.includes(item.id)">
+                        <span>{{ item.value }}</span>
+                        <span v-if="originalForm.machineId===item.id">
+                            ( {{ $store.state.langData.cont.pageFn.equipment.curentMachine }} )
+                        </span>
+                        <span v-else-if="useMachines.includes(item.id)">
+                            ( {{ $store.state.langData.cont.pageFn.equipment.useMachine }} )
+                        </span>
+                    </el-option>
+                </el-select>
             </el-form-item>
             <el-form-item v-if="$store.state.gobalData.me.roleCode === 1" :label="$store.state.langData.cont.pageFn.table.MAC" prop="mac">
                 <el-input v-model="form.mac"></el-input>
@@ -24,6 +40,9 @@
             <el-form-item>
                 <el-button type="primary" @click.native.prevent="save" :loading="loading">
                     {{ $store.state.langData.cont.pageFn.golbal.Save }}
+                </el-button>
+                <el-button type="info" @click.native.prevent="reset">
+                    {{ $store.state.langData.cont.pageFn.golbal.Reset }}
                 </el-button>
                 <el-button @click.native.prevent="cancel">
                     {{ $store.state.langData.cont.pageFn.golbal.Cancel }}
@@ -58,13 +77,6 @@ export default {
                 callback()
             }
         }
-        var validatePassword = (rule, value, callback) => {
-            if (value.trim() === '') {
-                callback(new Error(this.$store.state.langData.cont.msg.validate.er0052))
-            } else {
-                callback()
-            }
-        }
         var validateDistributor = (rule, value, callback) => {
             if (value.trim() === '') {
                 callback(new Error(this.$store.state.langData.cont.msg.validate.er0053))
@@ -86,23 +98,24 @@ export default {
                     isUrl: false
                 }
             ],
-            form: {},
+            distributors: [],
+            stores: [],
+            machines: [],
+            useMachines: [],
+            form: {
+                id: '',
+                mac: '',
+                name: '',
+                distributorId: '',
+                storeId: '',
+                machineId: '',
+                machineName: '',
+                description: ''
+            },
             originalForm: {},
-            selected: {
-                distributor: {
-                    value: '',
-                    clear: false
-                },
-                store: {
-                    distributorId: '',
-                    value: '',
-                    clear: false
-                },
-                machine: {
-                    storeId: '',
-                    value: '',
-                    clear: false
-                }
+            original: {
+                stores: [],
+                machines: []
             },
             loading: false,
             rules: {
@@ -112,10 +125,7 @@ export default {
                 name: [
                     { validator: validateName, required: true, trigger: 'no' }
                 ],
-                password: [
-                    { validator: validatePassword, required: true, trigger: 'no' }
-                ],
-                distributor: [
+                distributorId: [
                     { validator: validateDistributor, required: true, trigger: 'no' }
                 ]
             }
@@ -136,24 +146,22 @@ export default {
                     let data = response.data.data
                     if (data.errorCode === 'er0000') {
                         this.originalForm = Object.assign({}, data.data)
-                        this.form = data.data
-                        this.selected.distributor.value = this.form.distributor
-                        this.selected.store.value = this.form.store
-                        this.selected.machine.value = this.form.machineValue
-                        this.changeAppLoadingStatus(false)
+                        //console.log(data)
+                        this.getDistributorData()
+                        this.form.id = data.data.id
+                        this.form.mac = data.data.mac
+                        this.form.name = data.data.name
+                        this.form.machineName = data.data.machineName
+                        this.form.description = data.data.description
                     }
                 }).catch(error => {
                     this.changeAppLoadingStatus(false)
                     console.log(error)
                 })
         },
-        querySearchAsync(queryString, cb) {
-            var restaurants = []
-            if (this.selected.distributor.clear) return
+        getDistributorData() {
             axios
-                .get('/api/getDistributorData', {
-                    params: { name: queryString }
-                })
+                .get('/api/getDistributorData', {})
                 .then(response => {
                     let data = response.data.data
                     if (data.errorCode === 'er0000') {
@@ -161,44 +169,40 @@ export default {
                             var opt = {}
                             opt.value = iteam.value
                             opt.id = iteam.id
-                            restaurants.push(opt)
+                            this.distributors.push(opt)
                         })
-                        cb(restaurants)
+                        this.form.distributorId = this.originalForm.distributorId
+                        this.getStore(false, true)
                     }
                 }).catch(error => {
                     console.log(error)
                 })
         },
-        handleSelect(item) {
-            this.form.distributorId = item.id
-            this.form.distributor = this.selected.distributor.value = item.value
-            this.checkStore()
-        },
-        handleBlur() {
-            this.form.distributor = this.selected.distributor.value
-        },
-        handleClear() {
-            this.$refs.distributor.$el.getElementsByTagName('input')[0].blur()
-            this.form.distributor = this.selected.distributor.value = ''
-            this.form.distributorId = ''
-            this.handleStoreClear()
-            this.selected.distributor.clear = true
-            setTimeout(() => {
-                this.selected.distributor.clear = false
-            }, 500)
-        },
-        checkStore() {
-            if (this.selected.store.distributorId !== this.form.distributorId) {
-                this.handleStoreClear()
+        clear() {
+            if (this.form.distributorId === '') {
+                this.form.storeId = ''
+                this.form.machineId = ''
+                this.form.machineName = ''
+                this.stores = []
+                this.machines = []
+            } else if (this.form.storeId === '') {
+                this.form.machineId = ''
+                this.form.machineName = ''
+                this.machines = []
             }
         },
-        querySearchStoreAsync(queryString, cb) {
-            var restaurants = []
-            if (this.selected.store.clear) return
+        getStore(clear, init = false) {
+            if (clear) {
+                this.form.storeId = ''
+                this.form.machineId = ''
+                this.form.machineName = ''
+                this.stores = []
+                this.machines = []
+            }
             if (this.form.distributorId !== '') {
                 axios
                     .get('/api/getStoreData', {
-                        params: { distributorId: this.form.distributorId, name: queryString }
+                        params: { distributorId: this.form.distributorId }
                     })
                     .then(response => {
                         let data = response.data.data
@@ -208,45 +212,34 @@ export default {
                                 opt.value = iteam.value
                                 opt.id = iteam.id
                                 opt.distributorId = iteam.distributorId
-                                restaurants.push(opt)
+                                this.stores.push(opt)
                             })
-                            cb(restaurants)
+                            if (init) {
+                                this.form.storeId = this.originalForm.storeId
+                                this.original.stores = this.stores
+                                if (this.form.storeId !== '') {
+                                    this.getMachine(false, true)
+                                } else {
+                                    this.changeAppLoadingStatus(false)
+                                }
+                            }
                         }
                     }).catch(error => {
-                        cb(restaurants)
+                        this.stores = []
                         console.log(error)
                     })
-            } else {
-                cb(restaurants)
             }
         },
-        handleStoreSelect(item) {
-            this.form.storeId = item.id
-            this.form.store = this.selected.store.value = item.value
-            this.selected.store.distributorId = item.distributorId
-            this.checkMachine()
-        },
-        handleStoreBlur() {
-            this.form.store = this.selected.store.value
-        },
-        handleStoreClear() {
-            this.$refs.store.$el.getElementsByTagName('input')[0].blur()
-            this.form.store = this.selected.store.value = ''
-            this.form.storeId = ''
-            this.selected.store.distributorId = ''
-            this.handleMachineClear()
-            this.selected.store.clear = true
-            setTimeout(() => {
-                this.selected.store.clear = false
-            }, 500)
-        },
-        querySearchMachineAsync(queryString, cb) {
-            var restaurants = []
-            if (this.selected.machine.clear) return
+        getMachine(clear, init = false) {
+            if (clear) {
+                this.form.machineId = ''
+                this.form.machineName = ''
+                this.machines = []
+            }
             if (this.form.storeId !== '') {
                 axios
                     .get('/api/getMachineData', {
-                        params: { storeId: this.form.storeId, name: queryString }
+                        params: { storeId: this.form.storeId }
                     })
                     .then(response => {
                         let data = response.data.data
@@ -257,62 +250,40 @@ export default {
                                 opt.id = iteam.id
                                 opt.storeId = iteam.storeId
                                 opt.distributorId = iteam.distributorId
-                                restaurants.push(opt)
+                                this.machines.push(opt)
                             })
-                            if (restaurants.length === 0) {
-                                var opt = {}
-                                opt.id = -1
-                                opt.value = '-- 無相關機台或機台均已綁定 --'
-                                restaurants.push(opt)
+                            this.useMachines = data.use
+                            if (init) {
+                                this.original.machines = this.machines
+                                this.form.machineId = this.originalForm.machineId
+                                this.changeAppLoadingStatus(false)
                             }
-                            cb(restaurants)
                         }
                     }).catch(error => {
-                        cb(restaurants)
+                        this.machines = []
                         console.log(error)
                     })
-            } else {
-                cb(restaurants)
             }
-        },
-        handleMachineSelect(item) {
-            if (item.id === -1) {
-                this.$nextTick(() => {
-                    this.originalFormMachine()
-                })
-            } else {
-                this.form.machineValue = this.selected.machine.value = item.value
-                this.form.machineId = item.id
-                this.selected.machine.storeId = item.storeId
 
+        },
+        reset() {
+            this.stores = this.original.stores
+            this.machines = this.original.machines
+            for (const key in this.originalForm) {
+                this.form[key] = this.originalForm[key]
             }
-        },
-        handleMachineBlur() {
-            this.form.machine = this.selected.machine.value
-        },
-        handleMachineClear() {
-            this.$refs.machine.$el.getElementsByTagName('input')[0].blur()
-            this.form.machineValue = this.selected.machine.value = ''
-            this.form.machineId = ''
-            this.selected.machine.storeId = ''
-            this.selected.machine.clear = true
-            setTimeout(() => {
-                this.selected.machine.clear = false
-            }, 500)
-        },
-        checkMachine() {
-            if (this.selected.machine.storeId !== this.form.storeId) {
-                this.handleMachineClear()
-            }
-        },
-        originalFormMachine() {
-            this.form.machineValue = this.selected.machine.value = this.originalForm.machineValue
-            this.form.machineId = this.originalForm.machineId
-            this.selected.machine.storeId = this.originalForm.storeId
         },
         save() {
             this.$refs['ruleForm'].validate((valid) => {
                 if (valid) {
+                    if (this.form.machineId === null || this.form.machineId === '') {
+                        this.form.machineName = ''
+                    } else {
+                        var machine = this.machines.find(item => {
+                            return item.id === this.form.machineId
+                        })
+                        this.form.machineName = machine.value
+                    }
                     this.loading = true
                     axios
                         .post('/api/updateEquipment', this.form)
@@ -348,7 +319,8 @@ export default {
         cancel() {
             this.$router.replace({ name: 'EquipmentList' })
         },
-    }
+    },
+    watch: {}
 }
 
 </script>

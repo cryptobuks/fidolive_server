@@ -3,14 +3,27 @@
         <Breadcrumb :iteams="br" />
         <br>
         <el-form :model="form" :rules="rules" ref="ruleForm" label-position="top">
-            <el-form-item :label="$store.state.langData.cont.pageFn.table.Distributor" prop="distributor">
-                <el-autocomplete ref="distributor" v-model="form.distributor" clearable :fetch-suggestions="querySearchAsync" :placeholder="$store.state.langData.cont.msg.placeholder.ph0002" @select="handleSelect" @blur="handleBlur" @clear="handleClear" style="width: 100%"></el-autocomplete>
+            <el-form-item :label="$store.state.langData.cont.pageFn.table.Distributor" prop="distributorId">
+                <el-select v-model="form.distributorId" :placeholder="$store.state.langData.cont.msg.placeholder.ph0002" clearable filterable @change="getStore" @clear="clear" :no-data-text="$store.state.langData.cont.msg.data.d0001" style="width: 100%">
+                    <el-option v-for="item in distributors" :key="item.id" :label="item.value" :value="item.id">
+                    </el-option>
+                </el-select>
             </el-form-item>
-            <el-form-item :label="$store.state.langData.cont.pageFn.table.Store" prop="store">
-                <el-autocomplete ref="store" v-model="form.store" clearable :fetch-suggestions="querySearchStoreAsync" :placeholder="$store.state.langData.cont.msg.placeholder.ph0002" @select="handleStoreSelect" @blur="handleStoreBlur" @clear="handleStoreClear" style="width: 100%"></el-autocomplete>
+            <el-form-item :label="$store.state.langData.cont.pageFn.table.Store" prop="storeId">
+                <el-select v-model="form.storeId" :placeholder="$store.state.langData.cont.msg.placeholder.ph0002" clearable filterable :disabled="stores.length===0" @change="getMachine" @clear="clear" :no-data-text="$store.state.langData.cont.msg.data.d0001" :no-match-text="$store.state.langData.cont.msg.data.d0002" style="width: 100%">
+                    <el-option v-for="item in stores" :key="item.id" :label="item.value" :value="item.id">
+                    </el-option>
+                </el-select>
             </el-form-item>
             <el-form-item :label="$store.state.langData.cont.pageFn.table.Machine" prop="machineId">
-                <el-autocomplete ref="machine" v-model="form.machineId" clearable :fetch-suggestions="querySearchMachineAsync" :placeholder="$store.state.langData.cont.msg.placeholder.ph0002" @select="handleMachineSelect" @blur="handleMachineBlur" @clear="handleMachineClear" style="width: 100%"></el-autocomplete>
+                <el-select v-model="form.machineId" :placeholder="$store.state.langData.cont.msg.placeholder.ph0002" clearable filterable :disabled="machines.length===0" :no-data-text="$store.state.langData.cont.msg.data.d0001" :no-match-text="$store.state.langData.cont.msg.data.d0002" style="width: 100%">
+                    <el-option v-for="item in machines" :key="item.id" :label="item.value" :value="item.id" :disabled="useMachines.includes(item.id)">
+                        <span>{{ item.value }}</span>
+                        <span v-if="useMachines.includes(item.id)">
+                            ( {{ $store.state.langData.cont.pageFn.equipment.useMachine }} )
+                        </span>
+                    </el-option>
+                </el-select>
             </el-form-item>
             <el-form-item :label="$store.state.langData.cont.pageFn.table.MAC" prop="mac">
                 <el-input v-model="form.mac"></el-input>
@@ -57,13 +70,6 @@ export default {
                 callback()
             }
         }
-        var validatePassword = (rule, value, callback) => {
-            if (value.trim() === '') {
-                callback(new Error(this.$store.state.langData.cont.msg.validate.er0052))
-            } else {
-                callback()
-            }
-        }
         var validateDistributor = (rule, value, callback) => {
             if (value.trim() === '') {
                 callback(new Error(this.$store.state.langData.cont.msg.validate.er0053))
@@ -85,32 +91,18 @@ export default {
                     isUrl: false
                 }
             ],
+            distributors: [],
+            stores: [],
+            machines: [],
+            useMachines: [],
             form: {
                 mac: '',
                 name: '',
-                password: 'fidodarts',
-                distributor: '',
                 distributorId: '',
-                store: '',
                 storeId: '',
                 machineId: '',
-                description: `Raspberry Pi 4 Model B 8G\nSD:32G\nUbuntu 20.04.2 LTS (GNU/Linux 5.4.0-1034-raspi aarch64)`
-            },
-            selected: {
-                distributor: {
-                    value: '',
-                    clear: false
-                },
-                store: {
-                    distributorId: '',
-                    value: '',
-                    clear: false
-                },
-                machine: {
-                    storeId: '',
-                    value: '',
-                    clear: false
-                }
+                machineName: '',
+                description: `Raspberry Pi 4 Model B 8G\nSD:32G\nLinux raspbian 5.10.78-Release-OPENFANS+20211111-v8 #1 SMP PREEMPT Thu Nov 11 15:43:52 CST 2021 aarch64 GNU/Linux)`,
             },
             loading: false,
             rules: {
@@ -120,24 +112,19 @@ export default {
                 name: [
                     { validator: validateName, required: true, trigger: 'no' }
                 ],
-                password: [
-                    { validator: validatePassword, required: true, trigger: 'no' }
-                ],
-                distributor: [
+                distributorId: [
                     { validator: validateDistributor, required: true, trigger: 'no' }
                 ]
             }
         }
     },
-    created() {},
+    created() {
+        this.getDistributorData()
+    },
     methods: {
-        querySearchAsync(queryString, cb) {
-            var restaurants = []
-            if (this.selected.distributor.clear) return
+        getDistributorData() {
             axios
-                .get('/api/getDistributorData', {
-                    params: { name: queryString }
-                })
+                .get('/api/getDistributorData', {})
                 .then(response => {
                     let data = response.data.data
                     if (data.errorCode === 'er0000') {
@@ -145,44 +132,36 @@ export default {
                             var opt = {}
                             opt.value = iteam.value
                             opt.id = iteam.id
-                            restaurants.push(opt)
+                            this.distributors.push(opt)
                         })
-                        cb(restaurants)
                     }
                 }).catch(error => {
                     console.log(error)
                 })
         },
-        handleSelect(item) {
-            this.form.distributorId = item.id
-            this.form.distributor = this.selected.distributor.value = item.value
-            this.checkStore()
-        },
-        handleBlur() {
-            this.form.distributor = this.selected.distributor.value
-        },
-        handleClear() {
-            this.$refs.distributor.$el.getElementsByTagName('input')[0].blur()
-            this.form.distributor = this.selected.distributor.value = ''
-            this.form.distributorId = ''
-            this.handleStoreClear()
-            this.selected.distributor.clear = true
-            setTimeout(() => {
-                this.selected.distributor.clear = false
-            }, 500)
-        },
-        checkStore() {
-            if (this.selected.store.distributorId !== this.form.distributorId) {
-                this.handleStoreClear()
+        clear() {
+            if (this.form.distributorId === '') {
+                this.form.storeId = ''
+                this.form.machineId = ''
+                this.form.machineName = ''
+                this.stores = []
+                this.machines = []
+            } else if (this.form.storeId === '') {
+                this.form.machineId = ''
+                this.form.machineName = ''
+                this.machines = []
             }
         },
-        querySearchStoreAsync(queryString, cb) {
-            var restaurants = []
-            if (this.selected.store.clear) return
+        getStore() {
+            this.form.storeId = ''
+            this.form.machineId = ''
+            this.form.machineName = ''
+            this.stores = []
+            this.machines = []
             if (this.form.distributorId !== '') {
                 axios
                     .get('/api/getStoreData', {
-                        params: { distributorId: this.form.distributorId, name: queryString }
+                        params: { distributorId: this.form.distributorId }
                     })
                     .then(response => {
                         let data = response.data.data
@@ -192,93 +171,52 @@ export default {
                                 opt.value = iteam.value
                                 opt.id = iteam.id
                                 opt.distributorId = iteam.distributorId
-                                restaurants.push(opt)
+                                this.stores.push(opt)
                             })
-                            cb(restaurants)
                         }
                     }).catch(error => {
-                        cb(restaurants)
+                        this.stores = []
                         console.log(error)
                     })
-            } else {
-                cb(restaurants)
             }
         },
-        handleStoreSelect(item) {
-            this.form.storeId = item.id
-            this.form.store = this.selected.store.value = item.value
-            this.selected.store.distributorId = item.distributorId
-            console.log(item)
-        },
-        handleStoreBlur() {
-            this.form.store = this.selected.store.value
-        },
-        handleStoreClear() {
-            this.$refs.store.$el.getElementsByTagName('input')[0].blur()
-            this.form.store = this.selected.store.value = ''
-            this.form.storeId = ''
-            this.selected.store.distributorId = ''
-            this.selected.store.clear = true
-            setTimeout(() => {
-                this.selected.store.clear = false
-            }, 500)
-        },
-        querySearchMachineAsync(queryString, cb) {
-            var restaurants = []
-            if (this.selected.machine.clear) return
+        getMachine() {
+            this.form.machineId = ''
+            this.form.machineName = ''
+            this.machines = []
             if (this.form.storeId !== '') {
                 axios
                     .get('/api/getMachineData', {
-                        params: { storeId: this.form.storeId, name: queryString }
+                        params: { storeId: this.form.storeId }
                     })
                     .then(response => {
                         let data = response.data.data
                         if (data.errorCode === 'er0000') {
                             data.data.map(iteam => {
                                 var opt = {}
-                                opt.value = iteam.id
+                                opt.value = iteam.value
                                 opt.id = iteam.id
                                 opt.storeId = iteam.storeId
                                 opt.distributorId = iteam.distributorId
-                                restaurants.push(opt)
+                                this.machines.push(opt)
                             })
-                            cb(restaurants)
+                            this.useMachines = data.use
                         }
                     }).catch(error => {
-                        cb(restaurants)
+                        this.machines = []
                         console.log(error)
                     })
-            } else {
-                cb(restaurants)
-            }
-        },
-        handleMachineSelect(item) {
-            this.form.machineId = this.selected.machine.value = item.id
-            this.selected.machine.storeId = item.storeId
-        },
-        handleMachineBlur() {
-            this.form.machineId  = this.selected.machine.value
-        },
-        handleMachineClear() {
-            this.$refs.machine.$el.getElementsByTagName('input')[0].blur()
-            this.form.machineId = this.selected.machine.value = ''
-            this.selected.machine.storeId = ''
-            this.selected.machine.clear = true
-            setTimeout(() => {
-                this.selected.machine.clear = false
-            }, 500)
-        },
-        checkMachine() {
-            if (this.selected.machine.storeId !== this.form.storeId) {
-                this.handleMachineClear()
             }
         },
         add() {
             this.$refs['ruleForm'].validate((valid) => {
                 if (valid) {
+                    if (this.form.machineId === -1) {
+                        this.form.machineId = ''
+                    }
                     this.loading = true
                     axios
-                        .post('/api/addEquipment', this.form )
+                        .post('/api/addEquipment', this.form)
                         .then(response => {
                             let data = response.data.data
                             if (data.errorCode === 'er0000') {
@@ -311,7 +249,8 @@ export default {
         cancel() {
             this.$router.replace({ name: 'EquipmentList' })
         }
-    }
+    },
+    watch: {}
 }
 
 </script>

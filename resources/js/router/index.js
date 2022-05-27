@@ -5,8 +5,12 @@ Vue.use(VueRouter)
 import Home from '../views/Home'
 import Login from '../views/Login'
 import EquipmentList from '../views/components/equipment/List'
-/*import AddTournament from '../views/components/tournament/Add'
-import EditTournament from '../views/components/tournament/Edit'
+import AddEquipment from '../views/components/equipment/Add'
+import EditEquipment from '../views/components/equipment/Edit'
+
+import View from '../views/View'
+import Pv from '../views/components/view/Pv'
+/*
 import TournamentLive from '../views/components/tournament/Live'*/
 /*import Tournament from '../views/Tournament'
 import League from '../views/League'
@@ -53,6 +57,35 @@ export default new VueRouter({
             path: '',
             name: 'EquipmentList',
             component: EquipmentList
+        }, {
+            path: 'add',
+            name: 'AddEquipment',
+            component: AddEquipment,
+            beforeEnter(to, from, next) {
+                if (localStorage.getItem('id') === null) {
+                    next('/')
+                } else {
+                    var id = Base64.decode(localStorage.getItem('id'))
+                    var ids = id.split(',')
+                    if (ids[2] * 1 === 1) {
+                        next()
+                    } else {
+                        next('/')
+                    }
+                }
+            }
+        }, {
+            path: 'edit',
+            name: 'EditEquipment',
+            component: EditEquipment,
+            props: (route) => ({ id: route.query.id }),
+            beforeEnter(to, from, next) {
+                if (localStorage.getItem('id') === null) {
+                    next('/')
+                } else {
+                    next()
+                }
+            }
         }]
     }, {
         path: '/login',
@@ -65,6 +98,15 @@ export default new VueRouter({
                 next()
             }
         }
+    }, {
+        path: '/view',
+        component: View,
+        children: [{
+            path: 'pv',
+            name: 'Pv',
+            component: Pv,
+            props: (route) => ({ id: route.query.id })
+        }]
     }, {
         path: "*",
         redirect: "/"

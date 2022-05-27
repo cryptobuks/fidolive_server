@@ -2,16 +2,17 @@
 
 return [
 	'golbal' => [
-		'Add' => 'Add',
+		'Add' => '新增',
 		'Cancel' => '取消',
-		'Edit' => 'Edit',
-		'Save' => 'Save',
+		'Edit' => '編輯',
+		'Save' => '儲存',
+		'Reset' => '重置',
 		'Port' => 'Port',
 		'Search' => 'Search',
 		'ok' => '確定'
 	],
 	'breadcrumb' => [
-		'Back' => 'Back'
+		'Back' => '返回'
 	],
 	'table' => [
 		'Id' => 'ID',
@@ -77,6 +78,8 @@ return [
     		'-',
     		'Player'
     	],
+    	'curentMachine' => '目前綁定設備',
+    	'useMachine' => '已綁定其他設備',
     	'reboot' => 'Reboot AWS',
     	'rebootMsg' => '建議直播前重啟AWS，釋放記憶體'
     ]
