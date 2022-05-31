@@ -65,7 +65,9 @@ export default {
         },
         changeConnectEquipment() {
             console.log('changeConnectEquipment')
-            this.fetchData()
+            setTimeout(() => {
+                this.fetchData()
+            },3000)
         },
         disconnect() {
             console.log('disconnect')
