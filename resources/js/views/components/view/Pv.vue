@@ -1,5 +1,5 @@
 <template>
-    <div class="no-user-select text-center">
+    <div class="no-user-select text-center" style="background: rgba(0,0,0,0);">
         <h1>{{ ename }}</h1>
         <iframe :class="type" frameborder="0" scrolling="no" allow="autoplay" :src="src"></iframe>
     </div>

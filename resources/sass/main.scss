@@ -12,6 +12,10 @@
 
 @import '~element-ui/lib/theme-chalk/index.css';
 
+html, body {
+    background-color: rgba(0,0,0,0)
+}
+
 html,
 button,
 a,
