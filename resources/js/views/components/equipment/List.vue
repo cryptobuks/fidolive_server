@@ -64,6 +64,7 @@ export default {
             },3000)
         },
         changeConnectEquipment() {
+            console.log('changeConnectEquipment')
             this.fetchData()
         },
         disconnect() {
