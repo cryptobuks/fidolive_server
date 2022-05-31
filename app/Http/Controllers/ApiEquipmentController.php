@@ -254,13 +254,38 @@ class ApiEquipmentController extends Controller
         
         return compact('data');
     }
+    public function setStatus(Request $request)
+    {
+        $data = [];
+        $sql = 'UPDATE iteam_connect_pi SET ip=NULL, status=0';
+        $result = DB::connection('mysql_video')->update($sql);
+        if($result) {
+            $data['errorCode'] = 'er0000';
+        } else {
+            $data['errorCode'] = 'er0001';
+        }
+        return compact('data');
+    }
 
     public function getPort(Request $request)
     {
         $data = [];
         $data['errorCode'] = 'er0000';
         $data['data'] = [];
-        $sql = 'SELECT u.port_no, u.port_name FROM iteam_port_used AS u LEFT JOIN iteam_pi AS p ON p.id=u.pi_id WHERE pi_id=:id';
+        $sql = 'SELECT port_no, port_name FROM iteam_port_used WHERE pi_id=:id';
+        $result = DB::connection('mysql_video')->select($sql, ['id' => $request->id]);
+        if($result) {
+            $data['data'] = $result;
+        }
+        return compact('data');
+    }
+
+    public function getName(Request $request)
+    {
+        $data = [];
+        $data['errorCode'] = 'er0000';
+        $data['data'] = [];
+        $sql = 'SELECT no, name, machine_id, machine_name FROM iteam_pi  WHERE id=:id';
         $result = DB::connection('mysql_video')->select($sql, ['id' => $request->id]);
         if($result) {
             $data['data'] = $result;

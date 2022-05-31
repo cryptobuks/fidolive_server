@@ -58,7 +58,7 @@ export default {
     }),
     mounted() {},
     methods: {
-        ...mapActions(['setLangCont', 'changeLoginStatus', 'changeDrawerStatus', 'setMe', 'changePageStatus', 'setEV', 'changeTitle'])
+        ...mapActions(['setLangCont', 'changeLoginStatus', 'changeDrawerStatus', 'setMe', 'changePageStatus', 'setEV'])
     },
     watch: {}
 }

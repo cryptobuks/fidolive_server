@@ -27,7 +27,10 @@
             </el-table-column>
             <el-table-column :label="$store.state.langData.cont.pageFn.table.IP">
                 <template slot-scope="scope">
-                    <el-link v-if="scope.row.status" type="success" @click.native.prevent="handlePort(scope.$index, scope.row)">{{ scope.row.ip }}</el-link>
+                    <el-link v-if="scope.row.status" type="success" @click.native.prevent="handlePi(scope.$index, scope.row)">{{ scope.row.ip }}</el-link>
+                    <p>
+                        <el-link v-if="scope.row.status" type="success" @click.native.prevent="handlePreview(scope.$index, scope.row)">{{ $store.state.langData.cont.pageFn.table.preview }}</el-link>
+                    </p>
                     <p>version : {{ scope.row.version }}</p>
                 </template>
             </el-table-column>
@@ -53,6 +56,21 @@ import { mapActions } from 'vuex'
 import Breadcrumb from '../layout/Breadcrumb.vue'
 export default {
     components: { Breadcrumb },
+    sockets: {
+        connect() {
+            console.log('connect')
+            setTimeout(() => {
+                this.fetchData()
+            },3000)
+        },
+        changeConnectEquipment() {
+            this.fetchData()
+        },
+        disconnect() {
+            console.log('disconnect')
+            this.clearPiContent()
+        }
+    },
     data() {
         return {
             br: [{
@@ -62,11 +80,19 @@ export default {
                 title: this.$store.state.langData.cont.slideMenu.List,
                 isUrl: false
             }],
-            tableData: []
+            tableData: [],
+            awsUrl: 'http://fidolive.ga'
         }
     },
     created() {
         this.changeAppLoadingStatus(true)
+    },
+    mounted() {
+        setTimeout(() => {
+            if (!this.$socket.connected) {
+                this.clearPiContent()
+            }
+        }, 3000)
         this.fetchData()
     },
     methods: {
@@ -94,8 +120,20 @@ export default {
             this.changeAppLoadingStatus(true)
             this.fetchData()
         },
-        handlePort() {
-
+        handlePi(index, row) {
+            axios
+                .get('/api/getEquipmentPort', { params: { id: row.id } })
+                .then(response => {
+                    let data = response.data.data
+                    if (data.errorCode === 'er0000') {
+                        var port = data.data[1].port_no
+                        window.open(`${this.awsUrl}:${port}`, '_blank')
+                    } else {}
+                }).catch(error => {})
+        },
+        handlePreview(index, row) {
+            let routeData = this.$router.resolve({ name: 'Pv', query: { id: row.id, type: 'combination' } })
+            window.open(routeData.href, '_blank')
         },
         handleEdit(index, row) {
             this.$router.push({ name: 'EditEquipment', query: { id: row.id } })
@@ -130,6 +168,16 @@ export default {
                     })
                 })
         },
+        clearPiContent() {
+            axios
+                .post('/api/disconentEquipmentStatus')
+                .then(response => {
+                    let data = response.data.data
+                    if (data.errorCode === 'er0000') {
+                        this.fetchData()
+                    } else {}
+                }).catch(error => {})
+        }
     }
 }
 

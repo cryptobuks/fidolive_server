@@ -8,6 +8,9 @@ import EquipmentList from '../views/components/equipment/List'
 import AddEquipment from '../views/components/equipment/Add'
 import EditEquipment from '../views/components/equipment/Edit'
 
+import League from '../views/League'
+import LeagueLive from '../views/components/league/Live'
+
 import View from '../views/View'
 import Pv from '../views/components/view/Pv'
 /*
@@ -99,13 +102,22 @@ export default new VueRouter({
             }
         }
     }, {
+        path: '/league',
+        component: League,
+        children: [{
+            path: 'live',
+            name: 'LeagueLive',
+            component: LeagueLive,
+            props: (route) => ({ id: route.query.id, groupId: route.query.groupId })
+        }]
+    }, {
         path: '/view',
         component: View,
         children: [{
             path: 'pv',
             name: 'Pv',
             component: Pv,
-            props: (route) => ({ id: route.query.id })
+            props: (route) => ({ id: route.query.id, type: route.query.type })
         }]
     }, {
         path: "*",

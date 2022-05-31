@@ -26,7 +26,9 @@ Route::post('/updateEquipment', 'ApiEquipmentController@update')->name('updateEq
 Route::delete('/deleteEquipment', 'ApiEquipmentController@delete')->name('deleteEquipment');
 Route::get('/getEquipmentStatus', 'ApiEquipmentController@getStatus')->name('getEquipmentStatus');
 Route::get('/getEquipmentPort', 'ApiEquipmentController@getPort')->name('getEquipmentPort');
+Route::get('/getEquipmentName', 'ApiEquipmentController@getName')->name('getEquipmentName');
 Route::post('/setAudio', 'ApiEquipmentController@setAudio')->name('setAudio');
+Route::post('/disconentEquipmentStatus', 'ApiEquipmentController@setStatus')->name('disconentEquipmentStatus');
 
 
 
