@@ -13,6 +13,7 @@ import LeagueLive from '../views/components/league/Live'
 
 import View from '../views/View'
 import Pv from '../views/components/view/Pv'
+import Lg from '../views/components/view/Lg'
 /*
 import TournamentLive from '../views/components/tournament/Live'*/
 /*import Tournament from '../views/Tournament'
@@ -114,6 +115,11 @@ export default new VueRouter({
         path: '/view',
         component: View,
         children: [{
+            path: 'lg',
+            name: 'Lg',
+            component: Lg,
+            props: (route) => ({ id: route.query.id })
+        }, {
             path: 'pv',
             name: 'Pv',
             component: Pv,

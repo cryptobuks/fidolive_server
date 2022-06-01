@@ -11,12 +11,12 @@ export default {
         return {}
     },
     created() {
-    	var route = this.$route
+    	/*var route = this.$route
         console.log(route)
-        this.changeTitle({ title: 'default', name: route.name })
+        this.changeTitle({ title: 'default', name: route.name })*/
     },
     methods: {
-    	...mapActions(['changeTitle'])
+    	//...mapActions(['changeTitle'])
     }
 }
 

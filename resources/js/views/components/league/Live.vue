@@ -9,16 +9,16 @@
                 </el-select>
             </el-form-item>
             <el-form-item :label="$store.state.langData.cont.pageFn.table.LeagueGroup" prop="groupId">
-                <el-select v-model="form.groupId" :placeholder="$store.state.langData.cont.msg.placeholder.ph0002" :no-data-text="$store.state.langData.cont.msg.data.d0001" clearable style="width: 100%">
+                <el-select v-model="form.groupId" :placeholder="$store.state.langData.cont.msg.placeholder.ph0002" :no-data-text="$store.state.langData.cont.msg.data.d0001" clearable @change="handleGroupSelect" style="width: 100%">
                     <el-option v-for="item in form.groupData" :key="item.id" :label="item.groupName" :value="item.id">
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item>
+            <!-- <el-form-item>
                 <el-button type="primary" @click.native.prevent="search">
                     {{ $store.state.langData.cont.pageFn.golbal.Search }}
                 </el-button>
-            </el-form-item>
+            </el-form-item> -->
         </el-form>
         <br>
         <el-table :data="battleData" stripe style="width: 100%" :empty-text="$store.state.langData.cont.msg.data.d0001">
@@ -88,10 +88,12 @@ export default {
         }
     },
     created() {
+        var route = this.$route
+        this.changeTitle({ title: 'default', name: route.name })
         this.fetchData()
     },
     methods: {
-        ...mapActions(['changeAppLoadingStatus']),
+        ...mapActions(['changeAppLoadingStatus', 'changeTitle']),
         fetchData() {
             this.changeAppLoadingStatus(true)
             axios
@@ -125,7 +127,14 @@ export default {
                         if (data.errorCode === 'er0000') {
                             this.form.groupData = data.data
                             if (typeof this.groupId !== 'undefined') {
-                                this.form.groupId = this.groupId
+                                let g = this.form.groupData.filter(iteam => {
+                                    return iteam.id === this.groupId
+                                })
+                                if (g.length > 0) {
+                                    this.form.groupId = this.groupId
+                                } else {
+                                    this.form.groupId = ''
+                                }
                             }
                             this.handleGroupSelect()
                         }
@@ -137,35 +146,41 @@ export default {
                 this.changeAppLoadingStatus(false)
                 this.form.groupId = ''
                 this.form.groupData = []
+                this.battleData = []
             }
         },
         handleGroupSelect() {
-            this.changeAppLoadingStatus(true)
-            if (this.form.id !== '' && this.form.groupId !== '') {
-                let l = this.form.data.filter(iteam => {
-                    return iteam.id === this.form.id
-                })
-                axios
-                    .get('/api/getLeagueBattleData', {
-                        params: { id: this.form.id, groupId: this.form.groupId, timezone: l[0].timezone }
+            if (this.form.groupId !== '') {
+                if (this.form.groupId !== this.groupId) {
+                    this.search()
+                } else {
+                    this.changeAppLoadingStatus(true)
+                    let l = this.form.data.filter(iteam => {
+                        return iteam.id === this.form.id
                     })
-                    .then(response => {
-                        let data = response.data.data
-                        console.log(data)
-                        if (data.errorCode === 'er0000') {
-                            this.battleData = data.data
+                    axios
+                        .get('/api/getLeagueBattleData', {
+                            params: { id: this.form.id, groupId: this.form.groupId, timezone: l[0].timezone }
+                        })
+                        .then(response => {
+                            let data = response.data.data
+                            console.log(data)
+                            if (data.errorCode === 'er0000') {
+                                this.battleData = data.data
+                                this.changeAppLoadingStatus(false)
+                            }
+                        }).catch(error => {
                             this.changeAppLoadingStatus(false)
-                        }
-                    }).catch(error => {
-                        this.changeAppLoadingStatus(false)
-                        console.log(error)
-                    })
+                            console.log(error)
+                        })
+                }
             } else {
                 this.changeAppLoadingStatus(false)
                 this.battleData = []
             }
         },
         search() {
+            //this.changeAppLoadingStatus(true)
             if (this.form.id !== '' && this.form.groupId !== '') {
                 window.location.href = `/league/live?id=${this.form.id}&groupId=${this.form.groupId}`
             }

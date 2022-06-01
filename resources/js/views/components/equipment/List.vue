@@ -88,6 +88,8 @@ export default {
         }
     },
     created() {
+        var route = this.$route
+        this.changeTitle({ title: 'default', name: route.name })
         this.changeAppLoadingStatus(true)
     },
     mounted() {
@@ -99,7 +101,7 @@ export default {
         this.fetchData()
     },
     methods: {
-        ...mapActions(['changeAppLoadingStatus', 'changeLoadingText']),
+        ...mapActions(['changeAppLoadingStatus', 'changeLoadingText', 'changeTitle']),
         fetchData() {
             axios
                 .get('/api/getEquipmentListData', {

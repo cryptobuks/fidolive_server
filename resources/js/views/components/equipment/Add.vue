@@ -46,7 +46,7 @@
     </div>
 </template>
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import Breadcrumb from '../layout/Breadcrumb.vue'
 export default {
     components: { Breadcrumb },
@@ -119,9 +119,12 @@ export default {
         }
     },
     created() {
+        var route = this.$route
+        this.changeTitle({ title: 'default', name: route.name })
         this.getDistributorData()
     },
     methods: {
+        ...mapActions(['changeTitle']),
         getDistributorData() {
             axios
                 .get('/api/getDistributorData', {})

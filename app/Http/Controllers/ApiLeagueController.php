@@ -15,10 +15,10 @@ class ApiLeagueController extends Controller
         $data['data'] = DB::connection('mysql')->select($sql);
         if($request->distributor_id === null || $request->distributor_id === '') {
             $sql = 'SELECT id, name, store_id FROM iteam_pi WHERE is_delete=0 ORDER BY id ASC';
-            $data['pi'] = DB::connection('mysql')->select($sql);
+            $data['pi'] = DB::connection('mysql_video')->select($sql);
         } else {
             $sql = 'SELECT id, name, store_id FROM iteam_pi WHERE is_delete=0 AND distributor_id=:distributor_id ORDER BY id ASC';
-            $data['pi'] = DB::connection('mysql')->select($sql, ['distributor_id' => $request->distributor_id]);
+            $data['pi'] = DB::connection('mysql_video')->select($sql, ['distributor_id' => $request->distributor_id]);
         }
         array_unshift($data['pi'] , (object)['id' => 0, 'name' => '無設備', 'store_id' => 0]);
         return compact('data');
@@ -46,9 +46,9 @@ class ApiLeagueController extends Controller
         $sql = 'SELECT id, name FROM league_team WHERE leagueId=:id AND groupId=:groupId';
         $tTeam = DB::connection('mysql')->select($sql, ['id' => $request->id, 'groupId' => $request->groupId]);
         $sql = 'SELECT team_id, pi_id FROM iteam_league_pi';
-        $tPi = DB::connection('mysql')->select($sql);
+        $tPi = DB::connection('mysql_video')->select($sql);
         $sql = 'SELECT b_id, audio FROM iteam_league_audio';
-        $audio = DB::connection('mysql')->select($sql);
+        $audio = DB::connection('mysql_video')->select($sql);
         foreach ($data['data'] as $key => $value) {
             $d = collect($tStore)->where('id', $value->homeStoreId)->first();
             $value->homeStoreName = '';
@@ -96,44 +96,44 @@ class ApiLeagueController extends Controller
         $data = [];
         if(!($request->homePi === null || $request->homePi === '') && !($request->homePi === null || $request->homePi === '')) {
             $sql = 'SELECT id FROM iteam_league_audio WHERE b_id=:id';
-            $d = DB::connection('mysql')->select($sql, ['id' => $request->id]);
+            $d = DB::connection('mysql_video')->select($sql, ['id' => $request->id]);
             if($d) {
                 $sql = 'UPDATE iteam_league_audio SET audio=:audio WHERE id=:id';
-                DB::connection('mysql')->update($sql, [
+                DB::connection('mysql_video')->update($sql, [
                     'id' => $d[0]->id,
                     'audio' => $request->audio
                 ]);
             } else {
                 $sql = 'INSERT INTO iteam_league_audio (b_id, audio) VALUES (:id, :audio)';
-                DB::connection('mysql')->insert($sql, [
+                DB::connection('mysql_video')->insert($sql, [
                     'id' => $request->id,
                     'audio' => $request->audio
                 ]);
             }
         }
         $sql = 'SELECT id, pi_id FROM iteam_league_pi WHERE team_id=:homeTeamId';
-        $d = DB::connection('mysql')->select($sql, ['homeTeamId' => $request->homeTeamId]);
+        $d = DB::connection('mysql_video')->select($sql, ['homeTeamId' => $request->homeTeamId]);
         if($d) {
             if(!($request->homePi === null || $request->homePi === '')) {
                 if($d[0]->pi_id === $request->homePi) {
                     $result = 1;
                 } else {
                     $sql = 'UPDATE iteam_league_pi SET pi_id=:homePi WHERE id=:id';
-                    $result = DB::connection('mysql')->update($sql, [
+                    $result = DB::connection('mysql_video')->update($sql, [
                         'id' => $d[0]->id,
                         'homePi' => $request->homePi
                     ]);
                 }
             } else {
                 $sql = 'DELETE FROM iteam_league_pi WHERE id=:id';
-                $result = DB::connection('mysql')->delete($sql, [
+                $result = DB::connection('mysql_video')->delete($sql, [
                     'id' => $d[0]->id
                 ]);
             }
         } else {
             if(!($request->homePi === null || $request->homePi === '')) {
                 $sql = 'INSERT INTO iteam_league_pi (team_id, pi_id) VALUES (:homeTeamId, :homePi)';
-                $result = DB::connection('mysql')->insert($sql, [
+                $result = DB::connection('mysql_video')->insert($sql, [
                     'homeTeamId' => $request->homeTeamId,
                     'homePi' => $request->homePi
                 ]);
@@ -144,28 +144,28 @@ class ApiLeagueController extends Controller
         if($result) {
             if($request->homeTeamId !== $request->awayTeamId) {
                 $sql = 'SELECT id, pi_id FROM iteam_league_pi WHERE team_id=:awayTeamId';
-                $d = DB::connection('mysql')->select($sql, ['awayTeamId' => $request->awayTeamId]);
+                $d = DB::connection('mysql_video')->select($sql, ['awayTeamId' => $request->awayTeamId]);
                 if($d) {
                     if(!($request->awayPi === null || $request->awayPi === '')) {
                         if($d[0]->pi_id === $request->awayPi) {
                             $result = 1;
                         } else {
                             $sql = 'UPDATE iteam_league_pi SET pi_id=:awayPi WHERE id=:id';
-                            $result = DB::connection('mysql')->update($sql, [
+                            $result = DB::connection('mysql_video')->update($sql, [
                                 'id' => $d[0]->id,
                                 'awayPi' => $request->awayPi
                             ]);
                         }
                     } else {
                         $sql = 'DELETE FROM iteam_league_pi WHERE id=:id';
-                        $result = DB::connection('mysql')->delete($sql, [
+                        $result = DB::connection('mysql_video')->delete($sql, [
                             'id' => $d[0]->id
                         ]);
                     }
                 } else {
                     if(!($request->awayPi === null || $request->awayPi === '')) {
                         $sql = 'INSERT INTO iteam_league_pi (team_id, pi_id) VALUES (:awayTeamId, :awayPi)';
-                        $result = DB::connection('mysql')->insert($sql, [
+                        $result = DB::connection('mysql_video')->insert($sql, [
                             'awayTeamId' => $request->awayTeamId,
                             'awayPi' => $request->awayPi
                         ]);
@@ -214,17 +214,17 @@ class ApiLeagueController extends Controller
             'status' => [false, false]
         ];
         $sql = 'SELECT pi_id FROM iteam_league_pi WHERE team_id=:homeTeamId';
-        $homePi = DB::connection('mysql')->select($sql, ['homeTeamId' => $data['data'][0]->homeTeamId]);
+        $homePi = DB::connection('mysql_video')->select($sql, ['homeTeamId' => $data['data'][0]->homeTeamId]);
         if($homePi) {
             $data['team'][0]['pi'] = $homePi[0]->pi_id;
         }
         $sql = 'SELECT pi_id FROM iteam_league_pi WHERE team_id=:awayTeamId';
-        $awayPi = DB::connection('mysql')->select($sql, ['awayTeamId' => $data['data'][0]->awayTeamId]);
+        $awayPi = DB::connection('mysql_video')->select($sql, ['awayTeamId' => $data['data'][0]->awayTeamId]);
         if($awayPi) {
             $data['team'][1]['pi'] = $awayPi[0]->pi_id;
         }
         $sql = 'SELECT audio FROM iteam_league_audio WHERE b_id=:id';
-        $audio = DB::connection('mysql')->select($sql, ['id' => $request->id]);
+        $audio = DB::connection('mysql_video')->select($sql, ['id' => $request->id]);
         if($audio) {
             $data['audio'] = $audio[0]->audio;
         } else {
