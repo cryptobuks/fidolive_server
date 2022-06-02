@@ -55,7 +55,7 @@ export default {
 </script>
 <style scoped lang="scss">
 iframe {
-    width: 100vw;
+    width: 100%;
 
     &.pc {
         height: calc(720/1280*100vw);
