@@ -94,12 +94,16 @@ export default {
 iframe {
     width: 100%;
 
-     &.pc {
+    &.pc {
         height: calc(720/1280*100vw);
     }
 
+    &.dartboard {
+        height: calc(896/1075*100vw);
+    }
+
     &.combination {
-        height: calc(792/1920*100vw + 8px);
+        height: calc(792/1920*100vw + 14px);
     }
 }
 
