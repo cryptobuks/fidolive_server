@@ -56,14 +56,7 @@ export default {
 <style scoped lang="scss">
 iframe {
     width: 100%;
-
-    &.pc {
-        height: calc(720/1280*100vw);
-    }
-
-    &.combination {
-        height: calc(792/1920*100vw - 8px);
-    }
+    height: 100%;
 }
 
 </style>
