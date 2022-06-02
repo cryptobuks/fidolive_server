@@ -62,7 +62,7 @@ iframe {
     }
 
     &.combination {
-        height: calc(792/1920*100vw);
+        height: calc(792/1920*100vw - 8px);
     }
 }
 
