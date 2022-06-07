@@ -47,7 +47,11 @@ return [
 		'LeagueGroup' => 'Group',
 		'TournamentGroupType' => '賽制',
 		'TournamentGroup' => 'Group',
-		'preview' => '預覽畫面'
+		'preview' => '預覽畫面',
+		'setDartBoard' => '靶面設定',
+		"Zoom" => "放大",
+		"Up" => "上",
+		"Left" => "左"
 	],
     'login' => [
     	'label'  => 'Sign in',

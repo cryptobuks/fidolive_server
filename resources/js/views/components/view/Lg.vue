@@ -5,7 +5,7 @@
             <template v-if="!onePiMode">
                 <div v-for="(iteam, index) in team" :key="index" :class="['video-area', iteam.status[0] ? 'active' : '', boredrColor, 'game' ]">
                     <template v-if="iteam.pi !== -1">
-                        <f-player :id="iteam.pi" type="combination" />
+                        <f-player :id="iteam.pi" type="combination" :audio="audio===index? true : false" />
                         <!-- <div class="video-2">
                             <f-player :id="iteam.pi" :usb="2" :index="index" />
                         </div>
@@ -302,8 +302,8 @@ export default {
 
                             this.team[0].row = this.team[1].row = data.teamDetail.currentPlayerRow
 
-                            //this.changShowModel(this.gameCt)
-                            /*if (this.team[0].pi !== 0 && this.team[1].pi !== 0) {
+                            this.changShowModel(this.gameCt)
+                            if (this.team[0].pi !== 0 && this.team[1].pi !== 0) {
                                 if (this.team[0].pi !== this.team[1].pi) {
                                     this.changShowModel(data.currentTeam, 0)
                                 } else {
@@ -317,7 +317,7 @@ export default {
                                     }
                                 })
                                 this.changShowModel(data.currentTeam, 1)
-                            }*/
+                            }
                         }, 1000)
                     }
                 }

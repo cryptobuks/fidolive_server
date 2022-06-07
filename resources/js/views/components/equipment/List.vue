@@ -31,6 +31,9 @@
                     <p>
                         <el-link v-if="scope.row.status" type="success" @click.native.prevent="handlePreview(scope.$index, scope.row)">{{ $store.state.langData.cont.pageFn.table.preview }}</el-link>
                     </p>
+                    <p>
+                        <el-link v-if="scope.row.status" type="success" @click.native.prevent="handleSetDartBoard(scope.$index, scope.row)">{{ $store.state.langData.cont.pageFn.table.setDartBoard }}</el-link>
+                    </p>
                     <p>version : {{ scope.row.version }}</p>
                 </template>
             </el-table-column>
@@ -138,6 +141,10 @@ export default {
         },
         handlePreview(index, row) {
             let routeData = this.$router.resolve({ name: 'Pv', query: { id: row.id, type: 'combination' } })
+            window.open(routeData.href, '_blank')
+        },
+        handleSetDartBoard(index, row) {
+            let routeData = this.$router.resolve({ name: 'Pv', query: { id: row.id, type: 'dartboard' } })
             window.open(routeData.href, '_blank')
         },
         handleEdit(index, row) {

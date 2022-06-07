@@ -4,7 +4,7 @@
 <script>
 export default {
     components: {},
-    props: ['id', 'type'],
+    props: ['id', 'type', 'audio'],
     data() {
         return {
             ports: [],
@@ -25,7 +25,7 @@ export default {
             })
             //console.log(p_80)
             if (p_80 && p_8000) {
-                url = `${this.awsUrl}:${p_80.port_no}/${this.type}?p_8000=${p_8000.port_no}`
+                url = `${this.awsUrl}:${p_80.port_no}/${this.type}?p_8000=${p_8000.port_no}&audio=${this.audio}`
             }
             return url
         }
