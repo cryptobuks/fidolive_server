@@ -1,7 +1,10 @@
 //
 body {
+    &.overflow-hide {
+        overflow: hidden;
+    }
+
     margin: 0;
-    /* overflow: hidden; */
 
     .el-menu {
         border-right: 0px;

@@ -22,4 +22,8 @@ class ApiController extends Controller
     	}
     	return compact('data');
     }
+
+    public function test(Request $request) {
+        return 'ok'
+    }
 }

@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 */
 
 Route::post('/login', 'ApiController@login')->name('login');
+Route::post('/test', 'ApiController@test')->name('test');
 
 
 Route::get('/getEquipmentListData', 'ApiEquipmentController@getListData')->name('getEquipmentListData');

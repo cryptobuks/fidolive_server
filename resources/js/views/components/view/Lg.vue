@@ -87,6 +87,9 @@ export default {
     },
     created() {
         this.fetchData()
+        var body = document.getElementsByTagName('body')[0]
+        body.classList.add("overflow-hide")
+        console.log(body)
     },
     computed: {
         audioSrc() {

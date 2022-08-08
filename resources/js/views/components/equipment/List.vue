@@ -140,11 +140,11 @@ export default {
                 }).catch(error => {})
         },
         handlePreview(index, row) {
-            let routeData = this.$router.resolve({ name: 'Pv', query: { id: row.id, type: 'combination' } })
+            let routeData = this.$router.resolve({ name: 'Pv', query: { id: row.id, type: 'combination', audio: 'true' } })
             window.open(routeData.href, '_blank')
         },
         handleSetDartBoard(index, row) {
-            let routeData = this.$router.resolve({ name: 'Pv', query: { id: row.id, type: 'dartboard' } })
+            let routeData = this.$router.resolve({ name: 'Eg', query: { id: row.id } })
             window.open(routeData.href, '_blank')
         },
         handleEdit(index, row) {

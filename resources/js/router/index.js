@@ -15,7 +15,6 @@ import View from '../views/View'
 import Pv from '../views/components/view/Pv'
 import Lg from '../views/components/view/Lg'
 import Eg from '../views/components/view/Eg'
-import Position from '../views/components/view/component/Position'
 /*
 import TournamentLive from '../views/components/tournament/Live'*/
 /*import Tournament from '../views/Tournament'
@@ -130,12 +129,7 @@ export default new VueRouter({
             path: 'eg',
             name: 'Eg',
             component: Eg,
-            props: (route) => ({ id: route.query.id }),
-            children: [{
-                path: 'position',
-                name: 'Position',
-                component: Position
-            }]
+            props: (route) => ({ id: route.query.id })
         }]
     }, {
         path: "*",
