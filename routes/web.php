@@ -11,4 +11,5 @@
 |
 */
 Route::get('/info', 'SiteController@info');
+Route::get('/api/test', 'ApiController@test');
 Route::get('/{any}', 'SiteController@index')->where('any', '.*');
