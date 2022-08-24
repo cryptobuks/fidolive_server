@@ -12,7 +12,7 @@ class ApiEquipmentController extends Controller
     	$data = [];
         $data['errorCode'] = 'er0000';
         if($request->distributor_id === null || $request->distributor_id === '') {
-        	$sql = 'SELECT pi.id AS id, pi.no, pi.mac, pi.name, pi.store_id, pi.distributor_id, pi.machine_id, pi.machine_name, cpi.status AS status, cpi.ip, cpi.version FROM iteam_pi AS pi LEFT JOIN iteam_connect_pi AS cpi ON cpi.pi_id=pi.id  WHERE pi.is_delete=0 ORDER BY cpi.status DESC, pi.id ASC';
+        	$sql = 'SELECT pi.id AS id, pi.no, pi.mac, pi.name, pi.store_id, pi.distributor_id, pi.machine_id, pi.machine_name, cpi.status AS status, cpi.ipv4, cpi.z_mac, cpi.z_ipv4, cpi.version FROM iteam_pi AS pi LEFT JOIN iteam_connect_pi AS cpi ON cpi.pi_id=pi.id  WHERE pi.is_delete=0 ORDER BY cpi.status DESC, pi.id ASC';
         	$data['data'] = DB::connection('mysql_video')->select($sql);
 
         	if($data['data']) {
@@ -20,7 +20,7 @@ class ApiEquipmentController extends Controller
         		$store = DB::connection('mysql')->select($sql);
         	}
         } else {
-        	$sql = 'SELECT pi.id AS id, pi.no, pi.mac, pi.name, pi.store_id, pi.distributor_id, pi.machine_id, pi.machine_name, cpi.status AS status, cpi.ip, cpi.version FROM iteam_pi AS pi LEFT JOIN iteam_connect_pi AS cpi ON cpi.pi_id=pi.id WHERE pi.distributor_id=:distributor_id AND pi.is_delete=0 ORDER BY cpi.status DESC, pi.id ASC';
+        	$sql = 'SELECT pi.id AS id, pi.no, pi.mac, pi.name, pi.store_id, pi.distributor_id, pi.machine_id, pi.machine_name, cpi.status AS status, cpi.ipv4, cpi.z_mac, cpi.z_ipv4, cpi.version FROM iteam_pi AS pi LEFT JOIN iteam_connect_pi AS cpi ON cpi.pi_id=pi.id WHERE pi.distributor_id=:distributor_id AND pi.is_delete=0 ORDER BY cpi.status DESC, pi.id ASC';
         	$data['data'] = DB::connection('mysql_video')->select($sql, ['distributor_id' => $request->distributor_id]);
 
         	if($data['data']) {
@@ -257,7 +257,7 @@ class ApiEquipmentController extends Controller
     public function setStatus(Request $request)
     {
         $data = [];
-        $sql = 'UPDATE iteam_connect_pi SET ip=NULL, status=0';
+        $sql = 'UPDATE iteam_connect_pi SET ipv4=NULL, mac=NULL, z_ipv4=NULL, z_mac=NULL, status=0, version=NULL';
         $result = DB::connection('mysql_video')->update($sql);
         if($result) {
             $data['errorCode'] = 'er0000';

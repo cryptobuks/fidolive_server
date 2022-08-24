@@ -33,6 +33,8 @@ return [
 		'Status' => '狀態',
 		'IP' => 'IP',
 		'MAC' => 'MAC',
+		'Network Info' => '網路資訊',
+		'version' => '版本',
 		'Description' => '描述',
 		'USB' => 'USB',
 		'Type' => 'Type',
